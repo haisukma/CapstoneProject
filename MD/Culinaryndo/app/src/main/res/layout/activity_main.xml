@@ -21,8 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:fabAlignmentMode="center"
-        android:backgroundTint="?attr/colorOnPrimary"
-        app:addElevationShadow="true">
+        android:backgroundTint="?attr/colorOnPrimary">
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
             android:layout_width="match_parent"
@@ -31,8 +30,7 @@
             android:background="@android:color/transparent"
             app:menu="@menu/bottom_nav_menu"
             app:itemIconTint="@color/icon_color_nav"
-            app:itemTextAppearanceActive="?attr/textAppearanceTitleSmall"
-            app:itemTextAppearanceInactive="?attr/textAppearanceTitleSmall"
+            app:itemTextAppearanceInactive="@style/TextAppearance.Material3.LabelSmall"
             app:itemTextAppearanceActiveBoldEnabled="false"
             app:labelVisibilityMode="labeled"
             app:itemIconSize="20dp"
