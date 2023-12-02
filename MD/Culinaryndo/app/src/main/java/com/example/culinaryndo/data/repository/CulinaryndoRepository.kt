@@ -12,4 +12,12 @@ class CulinaryndoRepository(
     fun getSession(): Flow<LoginResult> {
         return userPreference.getSession()
     }
+
+    suspend fun saveSession(user: LoginResult){
+        userPreference.saveSession(user)
+    }
+
+    suspend fun logout(){
+        userPreference.logout()
+    }
 }
