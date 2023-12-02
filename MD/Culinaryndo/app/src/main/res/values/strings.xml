@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Culinaryndo</string>
+    <string name="title_home">Home</string>
+    <string name="title_bookmark">Boookmark</string>
+    <string name="title_history">History</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_scan">Scan</string>
+    <string name="scan_button">Scan button</string>
 </resources>
