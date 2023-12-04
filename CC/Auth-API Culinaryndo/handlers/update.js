@@ -31,7 +31,6 @@ module.exports = {
           next(error);
         }
       },
-    //update fullname
     updateFullname: async (req, res, next) => {
     try {
       const { id } = req.params;
