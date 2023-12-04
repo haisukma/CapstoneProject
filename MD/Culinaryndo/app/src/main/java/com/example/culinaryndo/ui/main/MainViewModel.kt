@@ -8,21 +8,15 @@ import com.example.culinaryndo.data.model.LoginResult
 import com.example.culinaryndo.data.repository.CulinaryndoRepository
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val culinaryndoRepository: CulinaryndoRepository): ViewModel() {
+class MainViewModel(private val repository: CulinaryndoRepository): ViewModel() {
 
     fun getSession(): LiveData<LoginResult> {
-        return culinaryndoRepository.getSession().asLiveData()
+        return repository.getSession().asLiveData()
     }
 
     fun saveSession(user: LoginResult){
         viewModelScope.launch {
-            culinaryndoRepository.saveSession(user)
-        }
-    }
-
-    fun logout(){
-        viewModelScope.launch {
-            culinaryndoRepository.logout()
+            repository.saveSession(user)
         }
     }
 }
