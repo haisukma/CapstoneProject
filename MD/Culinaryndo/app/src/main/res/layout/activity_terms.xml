@@ -19,7 +19,7 @@
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/title_setting_profile"
+            app:title="@string/title_terms_and_condition"
             app:titleTextColor="?attr/colorOnSurface"/>
     </com.google.android.material.appbar.AppBarLayout>
 
