@@ -65,6 +65,41 @@ touch handlers/getOne.js handlers/getAll.js
 // edit index.js
 
 
+patch 2
+//update photo profil
+
+//buat tabel di migration lalu send ke db
+
+// make tabel for url image
+npx sequelize-cli db:migrate
+npx sequelize-cli db:migrate:undo:all
+
+// buat tes send seed
+npx sequelize-cli db:seed:all
+
+// install body-parser dan multer
+npm i body-parser multer
+
+//setting app.js dengan body-parser
+
+//ambil key.json cloud storage
+
+//buat folder config
+mkdir config
+touch config/index.js
+
+//setting index js from config
+
+// install @google-cloud/storage
+npm i @google-cloud/storage
+
+//buat helpers/helpers.js untuk middleware
+mkdir helpers
+touch helpers/helpers.js
+
+//setting update.js dan tambahkan logic untuk update photo
+
+
 // register
 http://localhost:3001/user/register = name,username,password
 
