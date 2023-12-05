@@ -21,9 +21,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.culinaryndo.component.LoadingDialog
 import com.example.culinaryndo.data.Result
 import com.example.culinaryndo.ui.home.DetailFoodActivity
+import com.example.culinaryndo.ui.login.LoginActivity
 import com.example.culinaryndo.ui.scan.ScanActivity.Companion.CAMERAX_RESULT
 import com.example.culinaryndo.utils.uriToFile
 
@@ -56,9 +58,19 @@ class MainActivity : AppCompatActivity() {
         ) == PackageManager.PERMISSION_GRANTED
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //cek session
+        viewModel.getSession().observe(this){ session ->
+            if(session.isLogin != true){
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
+        }
+
 
         loadingDialog = LoadingDialog(this@MainActivity)
 
@@ -70,13 +82,6 @@ class MainActivity : AppCompatActivity() {
                startCameraX()
             }
         }
-
-//        viewModel.getSession().observe(this){ session ->
-//            if(session.isLogin != false){
-//                startActivity(Intent(this, LoginActivity::class.java))
-//                finish()
-//            }
-//        }
 
         setBottomNavigationView()
     }

@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
 import com.example.culinaryndo.databinding.FragmentProfileBinding
+import com.example.culinaryndo.ui.login.LoginActivity
 import com.example.culinaryndo.ui.main.MainViewModel
 import com.example.culinaryndo.ui.profile.setting.SettingActivity
 import com.example.culinaryndo.ui.profile.term.TermsActivity
@@ -36,6 +37,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         binding.apply {
             btnSetting.setOnClickListener(this@ProfileFragment)
             btnTerms.setOnClickListener(this@ProfileFragment)
+            btnLogout.setOnClickListener(this@ProfileFragment)
         }
     }
 
@@ -49,8 +51,8 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             }
             R.id.btn_logout -> {
                 viewModel.logout()
-                //startActivity(Intent(requireActivity(),TermsActivity::class.java))
-                //finish()
+                startActivity(Intent(requireActivity(),LoginActivity::class.java))
+                requireActivity().finish()
             }
         }
     }
