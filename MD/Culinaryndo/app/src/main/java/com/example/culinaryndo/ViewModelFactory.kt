@@ -7,6 +7,7 @@ import com.example.culinaryndo.data.repository.CulinaryndoRepository
 import com.example.culinaryndo.di.Injection
 import com.example.culinaryndo.ui.main.MainViewModel
 import com.example.culinaryndo.ui.profile.ProfileViewModel
+import com.example.culinaryndo.ui.scan.ScanViewModel
 
 class ViewModelFactory(
     private val culinaryndoRepository: CulinaryndoRepository
@@ -21,6 +22,9 @@ class ViewModelFactory(
             }
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
                 ProfileViewModel(culinaryndoRepository) as T
+            }
+            modelClass.isAssignableFrom(ScanViewModel::class.java) -> {
+                ScanViewModel(culinaryndoRepository) as T
             }
             else -> throw IllegalArgumentException("Unknow ViewModel Class: "+ modelClass.name)
         }

@@ -2,6 +2,7 @@
 package com.example.culinaryndo.ui.scan
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,14 +10,20 @@ import android.view.MenuItem
 import android.view.OrientationEventListener
 import android.view.Surface
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import com.example.culinaryndo.R
+import com.example.culinaryndo.ViewModelFactory
 import com.example.culinaryndo.databinding.ActivityScanBinding
+import com.example.culinaryndo.ui.profile.ProfileViewModel
 import com.example.culinaryndo.utils.createCustomTempFile
 
 class ScanActivity : AppCompatActivity() {
@@ -25,6 +32,10 @@ class ScanActivity : AppCompatActivity() {
 
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var imageCapture: ImageCapture? = null
+    private var currentImageUri: Uri? = null
+    private val viewModel by viewModels<ScanViewModel>{
+        ViewModelFactory.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +45,50 @@ class ScanActivity : AppCompatActivity() {
         setSupportActionBar(binding.appbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
         startCamera()
 
+        binding.btnFlash.setOnClickListener{
+            if (viewModel.flashMode.value == ImageCapture.FLASH_MODE_ON){
+                viewModel.flashMode.value = ImageCapture.FLASH_MODE_OFF
+                startCamera()
+            }else{
+                viewModel.flashMode.value = ImageCapture.FLASH_MODE_ON
+                startCamera()
+            }
+        }
+
+        viewModel.flashMode.observe(this){ value ->
+            when(value){
+                ImageCapture.FLASH_MODE_ON -> {
+                    binding.btnFlash.setImageResource(R.drawable.flash)
+                }
+                ImageCapture.FLASH_MODE_OFF -> {
+                    binding.btnFlash.setImageResource(R.drawable.flash_off)
+                }
+            }
+        }
+
         binding.btnCaptureImage.setOnClickListener{ takePhoto() }
+
+        binding.btnChoseImage.setOnClickListener{ choseFromGalery() }
+    }
+
+    private fun choseFromGalery() {
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private val launcherGallery = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            currentImageUri = uri
+            val intent = Intent()
+            intent.putExtra(EXTRA_CAMERAX_IMAGE,currentImageUri.toString())
+            setResult(CAMERAX_RESULT,intent)
+            finish()
+        } else {
+            Log.d("Photo Picker", "No media selected")
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -58,7 +109,9 @@ class ScanActivity : AppCompatActivity() {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                 }
 
-            imageCapture = ImageCapture.Builder().build()
+            imageCapture = ImageCapture.Builder()
+                .setFlashMode(viewModel.flashMode.value!!)
+                .build()
 
             try {
                 cameraProvider.unbindAll()

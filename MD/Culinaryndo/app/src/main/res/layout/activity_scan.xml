@@ -86,7 +86,7 @@
                 android:id="@+id/btn_flash"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
-                app:srcCompat="@drawable/flash" />
+                app:srcCompat="@drawable/flash_off" />
         </LinearLayout>
     </LinearLayout>
 
