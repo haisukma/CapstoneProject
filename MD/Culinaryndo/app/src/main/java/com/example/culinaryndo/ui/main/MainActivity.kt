@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                 val imageFile = uriToFile(uri,this)
                 Log.d("Image File: ","showImage: ${imageFile.path}")
 
-                loadingDialog.startLoadingDialog()
+                loadingDialog.startLoadingDialog(uri)
 
 //                viewModel.analyzeImage(imageFile).observe(this@MainActivity){ result ->
 //                    if (result != null){
