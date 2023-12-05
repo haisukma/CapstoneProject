@@ -23,4 +23,7 @@
     <string name="ed_email_address">Email Address</string>
     <string name="ed_username">Username</string>
     <string name="ed_fullname">Fullname</string>
+    <string name="edit_image_description">Edit Image</string>
+    <string name="scan_title">Scan Your Food</string>
+    <string name="loading_analyse_titile">Analyse Image...</string>
 </resources>
