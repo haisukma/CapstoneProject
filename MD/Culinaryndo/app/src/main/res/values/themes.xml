@@ -39,4 +39,17 @@
         <item name="postSplashScreenTheme">@style/Base.Theme.Culinaryndo</item>
         <item name="windowSplashScreenIconBackgroundColor">@color/md_theme_light_onPrimary</item>
     </style>
+
+    <style name="CustomCardViewDetail" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
+    </style>
+
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">35dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">35dp</item>
+    </style>
 </resources>

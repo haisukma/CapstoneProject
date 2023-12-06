@@ -48,4 +48,6 @@
     <string name="warning_password_verif">Password tidak sama</string>
     <string name="welcome">Hello, %1$s \nIndentifier Your Food Today</string>
     <string name="search_hint">Find your favorite food</string>
+    <string name="title_restaurant_name">Restaurant Name</string>
+    <string name="gambar_makanan">Gambar Makanan</string>
 </resources>
