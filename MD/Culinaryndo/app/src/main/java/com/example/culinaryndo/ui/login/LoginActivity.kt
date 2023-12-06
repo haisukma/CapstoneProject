@@ -23,7 +23,8 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.button2.setOnClickListener { login() }
+        binding.btnSignIn.setOnClickListener { login() }
+        binding.btnSignup.setOnClickListener { startActivity(Intent(this,SignUpActivity::class.java)) }
     }
 
     private fun login() {
