@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         //cek session
         viewModel.getSession().observe(this){ session ->
             if(session.isLogin != true){
