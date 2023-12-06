@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.culinaryndo.data.model.LoginResult
 import com.example.culinaryndo.data.repository.CulinaryndoRepository
 import kotlinx.coroutines.launch
+import java.io.File
 
 class MainViewModel(private val repository: CulinaryndoRepository): ViewModel() {
 
@@ -19,4 +20,6 @@ class MainViewModel(private val repository: CulinaryndoRepository): ViewModel() 
             repository.saveSession(user)
         }
     }
+
+//    fun analyzeImage(imageFile: File) = repository.analyzeImage(imageFile)
 }

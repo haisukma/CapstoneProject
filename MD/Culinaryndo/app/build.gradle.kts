@@ -86,4 +86,6 @@ dependencies {
     implementation("androidx.camera:camera-view:$cameraxVersion")
 
     implementation("androidx.exifinterface:exifinterface:1.3.6")
+
+    implementation("androidx.core:core-splashscreen:1.0.0")
 }
