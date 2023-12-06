@@ -3,6 +3,7 @@ package com.example.culinaryndo.ui.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Patterns
 import androidx.activity.viewModels
 import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
@@ -32,6 +33,9 @@ class LoginActivity : AppCompatActivity() {
         when {
             email.isEmpty() -> {
                 binding.signupEmailInputLayout.error = "Email tidak boleh kosong!"
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                binding.signupEmailInputLayout.error = "Email tidak Valid"
             }
             password.isEmpty() -> {
                 binding.signupPasswordtextInputLayout.error = "Password tidak boleh kosong!"
