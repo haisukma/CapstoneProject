@@ -30,6 +30,7 @@
         app:layout_constraintTop_toBottomOf="@id/appbarLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_firstname"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/ed_firstname" />
@@ -44,6 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/ed_layout_firstname">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_lastname"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/ed_lastname" />
@@ -58,6 +60,7 @@
         app:layout_constraintTop_toBottomOf="@id/ed_layout_lastname">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_username"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/ed_username" />
@@ -72,6 +75,7 @@
         app:layout_constraintTop_toBottomOf="@id/ed_layout_username">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textEmailAddress"
@@ -88,6 +92,7 @@
         app:layout_constraintTop_toBottomOf="@id/ed_layout_email">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textPassword"
@@ -104,6 +109,7 @@
         app:layout_constraintTop_toBottomOf="@id/ed_layout_password">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_password_verif"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textPassword"
@@ -112,7 +118,7 @@
 
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btn_signup"
         android:layout_width="match_parent"
         android:layout_height="59dp"
         android:layout_marginTop="23dp"

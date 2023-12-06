@@ -33,13 +33,13 @@ class LoginActivity : AppCompatActivity() {
 
         when {
             email.isEmpty() -> {
-                binding.signupEmailInputLayout.error = "Email tidak boleh kosong!"
+                binding.signupEmailInputLayout.error = getString(R.string.warning_email_empty)
             }
             !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                binding.signupEmailInputLayout.error = "Email tidak Valid"
+                binding.signupEmailInputLayout.error = getString(R.string.warning_email_not_valid)
             }
             password.isEmpty() -> {
-                binding.signupPasswordtextInputLayout.error = "Password tidak boleh kosong!"
+                binding.signupPasswordtextInputLayout.error = getString(R.string.warning_password_empty)
             }
             else -> {
                 viewModel.saveSession(LoginResult("fasih","1","12345678",true))

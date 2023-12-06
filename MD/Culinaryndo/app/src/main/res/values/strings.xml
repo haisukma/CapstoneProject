@@ -38,4 +38,14 @@
     <string name="ed_firstname">Firstname</string>
     <string name="ed_lastname">Lastname</string>
     <string name="ed_pasword_verification">Pasword Verification</string>
+    <string name="warning_email_empty">Email tidak boleh kosong!</string>
+    <string name="warning_email_not_valid">Email tidak Valid</string>
+    <string name="warning_password_empty">Password tidak boleh kosong!</string>
+    <string name="warning_firstname_empty">Firstname tidak boleh kosong</string>
+    <string name="warning_3_character">Minimal 3 karakter</string>
+    <string name="warning_username_empty">Username tidak boleh kosong</string>
+    <string name="warning_5_character">Minimal 5 karakter</string>
+    <string name="warning_password_verif">Password tidak sama</string>
+    <string name="welcome">Hello, %1$s \nIndentifier Your Food Today</string>
+    <string name="search_hint">Find your favorite food</string>
 </resources>
