@@ -13,7 +13,9 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
@@ -25,6 +27,9 @@ import com.example.culinaryndo.ViewModelFactory
 import com.example.culinaryndo.databinding.ActivityScanBinding
 import com.example.culinaryndo.ui.profile.ProfileViewModel
 import com.example.culinaryndo.utils.createCustomTempFile
+import org.tensorflow.lite.task.vision.classifier.Classifications
+import java.text.NumberFormat
+import java.util.concurrent.Executors
 
 class ScanActivity : AppCompatActivity() {
 
@@ -33,6 +38,10 @@ class ScanActivity : AppCompatActivity() {
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var imageCapture: ImageCapture? = null
     private var currentImageUri: Uri? = null
+
+    private lateinit var imageClassifierHelper: ImageClassifierHelper
+
+
     private val viewModel by viewModels<ScanViewModel>{
         ViewModelFactory.getInstance(this)
     }
@@ -99,6 +108,33 @@ class ScanActivity : AppCompatActivity() {
     }
 
     private fun startCamera() {
+        imageClassifierHelper =
+            ImageClassifierHelper(
+                context = this,
+                imageClassifierListener = object : ImageClassifierHelper.ClassifierListener {
+                    override fun onError(error: String) {
+                        runOnUiThread {
+                            Toast.makeText(this@ScanActivity, error, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    override fun onResults(results: List<Classifications>?, inferenceTime: Long) {
+                        runOnUiThread {
+                            results?.let { it ->
+                                if (it.isNotEmpty() && it[0].categories.isNotEmpty()) {
+                                    println(it)
+                                    val sortedCategories =
+                                        it[0].categories.sortedByDescending { it?.score }
+                                    val displayResult =
+                                        sortedCategories.joinToString("\n") {
+                                            "${it.label} " + NumberFormat.getPercentInstance().format(it.score).trim()
+                                        }
+                                    binding.tvResult.text = displayResult
+                                }
+                            }
+                        }
+                    }
+                })
+
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
@@ -113,13 +149,27 @@ class ScanActivity : AppCompatActivity() {
                 .setFlashMode(viewModel.flashMode.value!!)
                 .build()
 
+            val imageAnalyzer =
+                ImageAnalysis.Builder()
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                    .setTargetRotation(binding.viewFinder.display.rotation)
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                    .build()
+                    .also {
+                        it.setAnalyzer(Executors.newSingleThreadExecutor()) { image ->
+                            imageClassifierHelper.classify(image)
+                        }
+                    }
+
             try {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
                     this,
                     cameraSelector,
                     preview,
-                    imageCapture
+                    imageCapture,
+                    imageAnalyzer
                 )
             } catch (exc: Exception) {
                 Toast.makeText(
