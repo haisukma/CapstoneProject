@@ -50,4 +50,5 @@
     <string name="search_hint">Find your favorite food</string>
     <string name="title_restaurant_name">Restaurant Name</string>
     <string name="gambar_makanan">Gambar Makanan</string>
+    <string name="btn_bookmark_now">Bookmark Now</string>
 </resources>

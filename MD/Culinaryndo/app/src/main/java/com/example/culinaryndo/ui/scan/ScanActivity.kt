@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
+import com.example.culinaryndo.data.model.ModelResult
 import com.example.culinaryndo.databinding.ActivityScanBinding
 import com.example.culinaryndo.ui.profile.ProfileViewModel
 import com.example.culinaryndo.utils.createCustomTempFile
@@ -38,6 +39,7 @@ class ScanActivity : AppCompatActivity() {
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var imageCapture: ImageCapture? = null
     private var currentImageUri: Uri? = null
+    private var foodNameResult = ""
 
     private lateinit var imageClassifierHelper: ImageClassifierHelper
 
@@ -80,6 +82,15 @@ class ScanActivity : AppCompatActivity() {
         binding.btnCaptureImage.setOnClickListener{ takePhoto() }
 
         binding.btnChoseImage.setOnClickListener{ choseFromGalery() }
+
+        viewModel.mostFrequentHighScoreFoodItem.observe(this){
+            if (it != null){
+                foodNameResult = it.name
+                Log.d("Result Akhir",foodNameResult)
+            }else{
+                Log.d("ERROR MODEL","No matching food items.")
+            }
+        }
     }
 
     private fun choseFromGalery() {
@@ -126,9 +137,12 @@ class ScanActivity : AppCompatActivity() {
                                         it[0].categories.sortedByDescending { it?.score }
                                     val displayResult =
                                         sortedCategories.joinToString("\n") {
+                                            val label = it.label.replace('_', ' ')
+                                            viewModel.addModelResult(ModelResult(label,it.score.toInt()))
                                             "${it.label} " + NumberFormat.getPercentInstance().format(it.score).trim()
                                         }
                                     binding.tvResult.text = displayResult
+
                                 }
                             }
                         }
@@ -200,6 +214,7 @@ class ScanActivity : AppCompatActivity() {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val intent = Intent()
                     intent.putExtra(EXTRA_CAMERAX_IMAGE,outputFileResults.savedUri.toString())
+                    intent.putExtra(FOOD_NAME,foodNameResult)
                     setResult(CAMERAX_RESULT,intent)
                     finish()
                 }
@@ -236,5 +251,6 @@ class ScanActivity : AppCompatActivity() {
         private const val TAG = "ScanActivity"
         const val EXTRA_CAMERAX_IMAGE = "CameraX Image"
         const val CAMERAX_RESULT = 200
+        const val FOOD_NAME = "foodName"
     }
 }
