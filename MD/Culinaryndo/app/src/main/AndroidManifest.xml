@@ -26,9 +26,6 @@
             android:name=".ui.home.DetailFoodActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.splashscreen.SplashScreenActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false" />
         <activity
@@ -49,7 +46,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Trigger Google Play services to install the backported photo picker module. -->
+        </activity>
+
+        <!-- Trigger Google Play services to install the backported photo picker module. -->
         <!-- suppress AndroidDomInspection -->
         <service
             android:name="com.google.android.gms.metadata.ModuleDependencies"

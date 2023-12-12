@@ -100,12 +100,16 @@ class MainActivity : AppCompatActivity() {
     ) {
         if (it.resultCode == CAMERAX_RESULT) {
             currentImageUri = it.data?.getStringExtra(ScanActivity.EXTRA_CAMERAX_IMAGE)?.toUri()
+            val foodName =  it.data?.getStringExtra(ScanActivity.FOOD_NAME)
 
             currentImageUri?.let { uri ->
                 val imageFile = uriToFile(uri,this)
                 Log.d("Image File: ","showImage: ${imageFile.path}")
 
                 loadingDialog.startLoadingDialog(uri)
+                Toast.makeText(this,foodName.toString(),Toast.LENGTH_SHORT).show()
+                Log.d("Result Akhir",foodName.toString())
+
 
 //                viewModel.analyzeImage(imageFile).observe(this@MainActivity){ result ->
 //                    if (result != null){
