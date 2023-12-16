@@ -3,7 +3,6 @@ package com.example.culinaryndo.ui.scan
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -13,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -21,12 +21,11 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
 import com.example.culinaryndo.data.model.ModelResult
 import com.example.culinaryndo.databinding.ActivityScanBinding
-import com.example.culinaryndo.ui.profile.ProfileViewModel
+import com.example.culinaryndo.ui.main.MainActivity
 import com.example.culinaryndo.utils.createCustomTempFile
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import java.text.NumberFormat
@@ -138,7 +137,13 @@ class ScanActivity : AppCompatActivity() {
                                     val displayResult =
                                         sortedCategories.joinToString("\n") {
                                             val label = it.label.replace('_', ' ')
-                                            viewModel.addModelResult(ModelResult(label,it.score.toInt()))
+
+                                            val modifiedLabel = label.split(" ")
+                                                .filter { it.isNotBlank() }
+                                                .joinToString(" ")
+
+                                            viewModel.addModelResult(ModelResult(modifiedLabel,it.score.toInt
+                                                ()))
                                             "${it.label} " + NumberFormat.getPercentInstance().format(it.score).trim()
                                         }
                                     binding.tvResult.text = displayResult
@@ -212,7 +217,7 @@ class ScanActivity : AppCompatActivity() {
                 }
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val intent = Intent()
+                    val intent = Intent(this@ScanActivity,MainActivity::class.java)
                     intent.putExtra(EXTRA_CAMERAX_IMAGE,outputFileResults.savedUri.toString())
                     intent.putExtra(FOOD_NAME,foodNameResult)
                     setResult(CAMERAX_RESULT,intent)
@@ -252,5 +257,6 @@ class ScanActivity : AppCompatActivity() {
         const val EXTRA_CAMERAX_IMAGE = "CameraX Image"
         const val CAMERAX_RESULT = 200
         const val FOOD_NAME = "foodName"
+        const val FROM_SCAN = "fromScan"
     }
 }

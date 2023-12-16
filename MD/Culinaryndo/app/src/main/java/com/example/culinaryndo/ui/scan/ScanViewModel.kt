@@ -4,10 +4,8 @@ import androidx.camera.core.ImageCapture
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.culinaryndo.data.model.ModelResult
 import com.example.culinaryndo.data.repository.CulinaryndoRepository
-import kotlinx.coroutines.launch
 
 class ScanViewModel(private val repository: CulinaryndoRepository): ViewModel() {
     val flashMode =  MutableLiveData<Int>()

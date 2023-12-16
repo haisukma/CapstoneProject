@@ -51,4 +51,6 @@
     <string name="title_restaurant_name">Restaurant Name</string>
     <string name="gambar_makanan">Gambar Makanan</string>
     <string name="btn_bookmark_now">Bookmark Now</string>
+    <string name="warning_passsword_minimun">Password minimal 8 karakter</string>
+    <string name="btn_remove_bookmark">Remove Bookmark</string>
 </resources>

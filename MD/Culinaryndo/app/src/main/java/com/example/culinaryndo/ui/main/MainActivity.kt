@@ -1,33 +1,36 @@
 package com.example.culinaryndo.ui.main
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import com.example.culinaryndo.data.Result
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
-import com.example.culinaryndo.databinding.ActivityMainBinding
-import com.example.culinaryndo.ui.scan.ScanActivity
-import android.Manifest
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.culinaryndo.component.LoadingDialog
-import com.example.culinaryndo.data.Result
+import com.example.culinaryndo.databinding.ActivityMainBinding
 import com.example.culinaryndo.ui.home.DetailFoodActivity
+import com.example.culinaryndo.ui.home.DetailFoodActivity.Companion.FOODS
 import com.example.culinaryndo.ui.login.LoginActivity
+import com.example.culinaryndo.ui.scan.ScanActivity
 import com.example.culinaryndo.ui.scan.ScanActivity.Companion.CAMERAX_RESULT
+import com.example.culinaryndo.ui.scan.ScanActivity.Companion.FROM_SCAN
 import com.example.culinaryndo.utils.uriToFile
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -63,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        loadingDialog = LoadingDialog(this@MainActivity)
 
         //cek session
         viewModel.getSession().observe(this){ session ->
@@ -71,9 +75,6 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         }
-
-
-        loadingDialog = LoadingDialog(this@MainActivity)
 
         binding.apply {
             navView.background = null
@@ -104,32 +105,29 @@ class MainActivity : AppCompatActivity() {
 
             currentImageUri?.let { uri ->
                 val imageFile = uriToFile(uri,this)
-                Log.d("Image File: ","showImage: ${imageFile.path}")
-
-                loadingDialog.startLoadingDialog(uri)
-                Toast.makeText(this,foodName.toString(),Toast.LENGTH_SHORT).show()
                 Log.d("Result Akhir",foodName.toString())
 
+                viewModel.scanFood(foodName.toString()).observe(this@MainActivity){ result ->
+                    if (result != null){
+                        when(result){
+                            is Result.Loading -> {
+                                loadingDialog.startLoadingDialog(uri)
+                            }
+                            is Result.Success -> {
+                                loadingDialog.dismisDialog()
 
-//                viewModel.analyzeImage(imageFile).observe(this@MainActivity){ result ->
-//                    if (result != null){
-//                        when(result){
-//                            is Result.Loading -> {
-//                                loadingDialog.startLoadingDialog()
-//                            }
-//                            is Result.Success -> {
-//                                Toast.makeText(this,result.data.message,Toast.LENGTH_SHORT).show()
-//                                val intent = Intent(this, DetailFoodActivity::class.java)
-//                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//                                startActivity(intent)
-//                            }
-//                            is Result.Error -> {
-//                                loadingDialog.dismisDialog()
-//                                Toast.makeText(this,result.error,Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                    }
-//                }
+                                val intent = Intent(this, DetailFoodActivity::class.java)
+                                intent.putExtra(FOODS,result.data.data?.first())
+                                intent.putExtra(FROM_SCAN,"scanActivity")
+                                startActivity(intent)
+                            }
+                            is Result.Error -> {
+                                loadingDialog.dismisDialog()
+                                Toast.makeText(this,result.error,Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -1,13 +1,5 @@
 package com.example.culinaryndo.ui.bookmark
 
-import android.content.Intent
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.example.culinaryndo.databinding.BookmarkItemBinding
-
 //class BookmarkAdapter: ListAdapter<FoodItems, BookmarkAdapter.MyViewHolder>(DIFF_CALLBACK)  {
 //    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 //        val binding = BookmarkItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)

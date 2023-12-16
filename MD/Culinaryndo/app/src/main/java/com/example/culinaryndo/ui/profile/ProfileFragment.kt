@@ -2,17 +2,18 @@ package com.example.culinaryndo.ui.profile
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
+import com.example.culinaryndo.data.Result
 import com.example.culinaryndo.databinding.FragmentProfileBinding
 import com.example.culinaryndo.ui.login.LoginActivity
-import com.example.culinaryndo.ui.main.MainViewModel
 import com.example.culinaryndo.ui.profile.setting.SettingActivity
 import com.example.culinaryndo.ui.profile.term.TermsActivity
 
@@ -39,6 +40,85 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             btnTerms.setOnClickListener(this@ProfileFragment)
             btnLogout.setOnClickListener(this@ProfileFragment)
         }
+
+       viewModel.getSession().observe(viewLifecycleOwner){
+           viewModel.getUserData(it.userId).observe(viewLifecycleOwner){result ->
+               if (result != null){
+                   when(result){
+                       is Result.Loading -> {
+                           setLoading(true)
+                       }
+                       is Result.Success -> {
+                           val data = result.data.data
+                           if (data != null){
+                               Glide.with(requireContext())
+                                   .load(data.urlImage)
+                                   .placeholder(R.drawable.frame4)
+                                   .into(binding.profileImage)
+
+                               binding.tvUsername.text = data.username
+                               binding.tvEmail.text = data.email
+                           }else{
+                               Toast.makeText(requireContext(),result.data.message,Toast.LENGTH_SHORT)
+                                   .show()
+                           }
+                            setLoading(false)
+                       }
+                       is Result.Error -> {
+                            setLoading(false)
+                            Toast.makeText(requireContext(),result.error,Toast.LENGTH_SHORT).show()
+                       }
+                   }
+               }
+           }
+
+           viewModel.getUserBookmark(it.userId).observe(viewLifecycleOwner){ result ->
+               if (result != null) {
+                   when (result) {
+                       is Result.Loading -> {
+                            setLoading(true)
+                       }
+
+                       is Result.Success -> {
+                            val data = result.data.data
+                            val bookmarkCount = data?.size ?: 0
+                            binding.tvBookmarkCount.text = bookmarkCount.toString()
+                            setLoading(false)
+                       }
+
+                       is Result.Error -> {
+                           setLoading(false)
+                           Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                       }
+                   }
+               }
+           }
+
+           viewModel.getUserHisotry(it.userId).observe(viewLifecycleOwner){ result ->
+               if (result != null) {
+                   when (result) {
+                       is Result.Loading -> {
+                           setLoading(true)
+                       }
+
+                       is Result.Success -> {
+                           val data = result.data.data
+                           val historyCount = data?.size ?: 0
+                           binding.tvHistoryCount.text = historyCount.toString()
+                           setLoading(false)
+                       }
+
+                       is Result.Error -> {
+                           setLoading(false)
+                           Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                       }
+                   }
+               }
+           }
+       }
+
+
+
     }
 
     override fun onClick(v: View?) {
@@ -55,5 +135,9 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 requireActivity().finish()
             }
         }
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }
