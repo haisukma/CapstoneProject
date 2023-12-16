@@ -1,7 +1,7 @@
 package com.example.culinaryndo.data.network
 
-import android.util.Config
-import okhttp3.Interceptor
+
+import com.example.culinaryndo.BuildConfig.DEBUG
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -11,7 +11,7 @@ class ApiConfig {
     companion object{
         fun getApiServices(): ApiServices {
 
-            val loggingInterceptor = if (Config.DEBUG){
+            val loggingInterceptor = if (DEBUG){
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             }else{
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
@@ -22,38 +22,7 @@ class ApiConfig {
                 .build()
 
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://expres.dicoding.dev/v1/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build()
-
-            return retrofit.create(ApiServices::class.java)
-        }
-
-
-        fun getApiServicesWithToken(token: String): ApiServices {
-
-            val authInterceptor = Interceptor{ chain ->
-                val req = chain.request()
-                val requestHeaders = req.newBuilder()
-                    .addHeader("Authorization","Bearer $token")
-                    .build()
-                chain.proceed(requestHeaders)
-            }
-
-            val loggingInterceptor = if (Config.DEBUG){
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-            }else{
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
-            }
-
-            val client = OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
-                .addInterceptor(authInterceptor)
-                .build()
-
-            val retrofit = Retrofit.Builder()
-                .baseUrl("https://story-api.dicoding.dev/v1/")
+                .baseUrl("https://dfaaltproject.et.r.appspot.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

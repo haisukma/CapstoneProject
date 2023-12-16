@@ -1,14 +1,22 @@
 package com.example.culinaryndo.ui.login
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.example.culinaryndo.R
+import com.example.culinaryndo.ViewModelFactory
+import com.example.culinaryndo.data.Result
 import com.example.culinaryndo.databinding.ActivitySignUpBinding
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
+    private val viewModel by viewModels<AuthViewModel> {
+        ViewModelFactory.getInstance (this@SignUpActivity)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +32,7 @@ class SignUpActivity : AppCompatActivity() {
     private fun singup() {
         val firstname = binding.edFirstname.text.toString()
         val lastname = binding.edLastname.text.toString()
+        val fullname = "$firstname $lastname"
         val username = binding.edUsername.text.toString()
         val email = binding.edEmail.text.toString()
         val password = binding.edPassword.text.toString()
@@ -48,13 +57,39 @@ class SignUpActivity : AppCompatActivity() {
             password.isEmpty() -> {
                 binding.edLayoutPasswordVerif.error = getString(R.string.warning_password_empty)
             }
+            password.length < 8 -> {
+                binding.edLayoutPasswordVerif.error = getString(R.string.warning_passsword_minimun)
+            }
             !password.equals(password_verif) -> {
                 binding.edLayoutPasswordVerif.error = getString(R.string.warning_password_verif)
             }
             else -> {
-                //create account
+                viewModel.register(fullname, username, email, password).observe(this){ result ->
+                    if (result != null){
+                        when(result){
+                            is Result.Loading -> {
+                                setLoading(true)
+                            }
+                            is Result.Success -> {
+                                Toast.makeText(this,result.data.message,Toast.LENGTH_SHORT).show()
+                                if (result.data.status == true){
+                                    finish()
+                                    setLoading(false)
+                                }
+                            }
+                            is Result.Error -> {
+                                setLoading(false)
+                                Toast.makeText(this@SignUpActivity,result.error, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

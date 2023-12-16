@@ -1,9 +1,8 @@
 package com.example.culinaryndo.ui.profile.term
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import com.example.culinaryndo.R
+import androidx.appcompat.app.AppCompatActivity
 import com.example.culinaryndo.databinding.ActivityTermsBinding
 
 class TermsActivity : AppCompatActivity() {
