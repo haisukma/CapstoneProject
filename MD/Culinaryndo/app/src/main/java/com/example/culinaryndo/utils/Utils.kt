@@ -13,6 +13,7 @@ import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 private val MAX_SIZE = 1000000
 private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
@@ -70,4 +71,10 @@ fun rotateImage(source: Bitmap,angel:Float): Bitmap {
     return Bitmap.createBitmap(
         source,0,0,source.width,source.height,matrix,true
     )
+}
+
+fun convertTimeStamp(time: String): Date? {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
+    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    return dateFormat.parse(time)
 }

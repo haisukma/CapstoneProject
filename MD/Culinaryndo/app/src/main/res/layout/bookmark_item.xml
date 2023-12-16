@@ -23,6 +23,7 @@
                 app:cardCornerRadius="20dp"
                 android:layout_marginEnd="20dp">
                 <ImageView
+                    android:id="@+id/iv_imageFood"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/food_image"
@@ -34,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
+                    android:id="@+id/tv_food_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/food_name"
@@ -42,6 +44,7 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="5dp"/>
                 <TextView
+                    android:id="@+id/tv_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/lorem_ipsum"

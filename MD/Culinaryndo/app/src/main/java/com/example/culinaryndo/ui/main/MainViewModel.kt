@@ -14,4 +14,6 @@ class MainViewModel(private val repository: CulinaryndoRepository): ViewModel() 
 
     fun scanFood(foodName: String) = repository.scanFood(foodName)
 
+    fun addHistory(userId: String, foodId: String) = repository.addHisotry(userId,foodId)
+
 }

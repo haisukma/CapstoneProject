@@ -1,12 +1,11 @@
 package com.example.culinaryndo.data.network
 
 import com.example.culinaryndo.data.model.AddBookmarkResponse
-import com.example.culinaryndo.data.model.BookmarkItem
+import com.example.culinaryndo.data.model.AddHisotryResponse
 import com.example.culinaryndo.data.model.BookmarkResponse
 import com.example.culinaryndo.data.model.DefaultResponse
 import com.example.culinaryndo.data.model.DetailResponse
 import com.example.culinaryndo.data.model.FoodResponse
-import com.example.culinaryndo.data.model.HistoryItem
 import com.example.culinaryndo.data.model.HistoryResponse
 import com.example.culinaryndo.data.model.UserResponse
 import okhttp3.MultipartBody
@@ -19,7 +18,6 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
-import retrofit2.http.PartMap
 import retrofit2.http.Path
 
 interface ApiServices {
@@ -81,6 +79,19 @@ interface ApiServices {
     suspend fun getUserHistory(
         @Path("userId") userId: String
     ): HistoryResponse
+
+    @FormUrlEncoded
+    @POST("history/{userId}")
+    suspend fun addHitory(
+        @Path("userId") username: String,
+        @Field("foodsId") foodId: String,
+    ) : AddHisotryResponse
+
+    @DELETE("history/{userId}/{historyId}")
+    suspend fun deleteHistory(
+        @Path("userId") userId: String,
+        @Path("historyId") bookmarkId: String,
+    ) : DefaultResponse
 
     @GET("foods/searchFoodTitle/{keyword}")
     suspend fun getFoodByKeyword(

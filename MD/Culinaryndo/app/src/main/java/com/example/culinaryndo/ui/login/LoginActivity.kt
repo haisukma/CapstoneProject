@@ -18,12 +18,13 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val viewModel by viewModels<AuthViewModel> {
-        ViewModelFactory.getInstance (this@LoginActivity)
+        ViewModelFactory.getInstance (this)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         binding.btnSignIn.setOnClickListener { login() }
         binding.btnSignup.setOnClickListener { startActivity(Intent(this,SignUpActivity::class.java)) }

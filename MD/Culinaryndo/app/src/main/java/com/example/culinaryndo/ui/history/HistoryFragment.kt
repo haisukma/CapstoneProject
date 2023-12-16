@@ -4,57 +4,108 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.culinaryndo.R
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.culinaryndo.ViewModelFactory
+import com.example.culinaryndo.data.Result
+import com.example.culinaryndo.databinding.FragmentHistoryBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HistoryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HistoryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private lateinit var binding: FragmentHistoryBinding
+    private val viewModel by viewModels<HistoryViewModel>{
+        ViewModelFactory.getInstance(requireContext())
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_history, container, false)
+        binding = FragmentHistoryBinding.inflate(layoutInflater,container,false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HistoryFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HistoryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.rvHisotry.layoutManager = layoutManager
+        binding.rvHisotry.addItemDecoration(DividerItemDecoration(requireContext(),layoutManager.orientation))
+
+        setHisotoryData()
+        val adapter = HistoryAdapter()
+
+        adapter.notifyDataSetChanged()
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder,
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val history = (viewHolder as HistoryAdapter.MyViewHolder).getBookmark()
+                viewModel.getSession().observe(viewLifecycleOwner){
+                    viewModel.deleteHistory(it.userId,history.historyId.toString())
+                        .observe(viewLifecycleOwner){ res ->
+                            if (res != null){
+                                when(res){
+                                    is Result.Loading -> {}
+                                    is Result.Success -> {
+                                        Toast.makeText(requireContext(),res.data.message, Toast
+                                            .LENGTH_SHORT).show()
+                                    }
+                                    is Result.Error -> {
+                                        Toast.makeText(requireContext(),res.error, Toast
+                                            .LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        }
                 }
             }
+
+        }).attachToRecyclerView(binding.rvHisotry)
     }
+
+    private fun setHisotoryData() {
+        viewModel.getSession().observe(requireActivity()){
+            if (it.isLogin){
+                viewModel.getHistoryByUser(it.userId).observe(requireActivity()){ result ->
+                    if (result != null){
+                        when(result){
+                            is Result.Loading -> {
+                                setLoading(true)
+                            }
+                            is Result.Success -> {
+                                val adapter = HistoryAdapter()
+                                adapter.submitList(result.data.data)
+                                binding.rvHisotry.adapter = adapter
+                                setLoading(false)
+                            }
+                            is Result.Error -> {
+                                setLoading(false)
+                                Toast.makeText(requireContext(),result.error, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }else{
+                Toast.makeText(requireContext(),"Session Not Found", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
 }

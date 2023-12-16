@@ -5,11 +5,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import com.example.culinaryndo.data.Result
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,6 +20,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
 import com.example.culinaryndo.component.LoadingDialog
+import com.example.culinaryndo.data.Result
 import com.example.culinaryndo.databinding.ActivityMainBinding
 import com.example.culinaryndo.ui.home.DetailFoodActivity
 import com.example.culinaryndo.ui.home.DetailFoodActivity.Companion.FOODS
@@ -66,15 +65,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadingDialog = LoadingDialog(this@MainActivity)
-
         //cek session
         viewModel.getSession().observe(this){ session ->
-            if(session.isLogin != true){
+            if(session.isLogin == false){
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }
         }
+
+        loadingDialog = LoadingDialog(this@MainActivity)
 
         binding.apply {
             navView.background = null
@@ -115,6 +114,16 @@ class MainActivity : AppCompatActivity() {
                             }
                             is Result.Success -> {
                                 loadingDialog.dismisDialog()
+
+                                viewModel.getSession().observe(this){
+                                    if (it != null){
+                                        viewModel.addHistory(it.userId,result.data.data?.first()?.id
+                                            .toString()).observe(this,{})
+                                    }else{
+                                        Toast.makeText(this,"Session is Empty", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                }
 
                                 val intent = Intent(this, DetailFoodActivity::class.java)
                                 intent.putExtra(FOODS,result.data.data?.first())
