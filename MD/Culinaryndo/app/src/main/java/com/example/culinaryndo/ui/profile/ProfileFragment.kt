@@ -2,6 +2,7 @@ package com.example.culinaryndo.ui.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,6 @@ import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
 import com.example.culinaryndo.data.Result
 import com.example.culinaryndo.databinding.FragmentProfileBinding
-import com.example.culinaryndo.ui.login.LoginActivity
 import com.example.culinaryndo.ui.profile.setting.SettingActivity
 import com.example.culinaryndo.ui.profile.term.TermsActivity
 
@@ -42,78 +42,82 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         }
 
        viewModel.getSession().observe(viewLifecycleOwner){
-           viewModel.getUserData(it.userId).observe(viewLifecycleOwner){result ->
-               if (result != null){
-                   when(result){
-                       is Result.Loading -> {
-                           setLoading(true)
-                       }
-                       is Result.Success -> {
-                           val data = result.data.data
-                           if (data != null){
-                               Glide.with(requireContext())
-                                   .load(data.urlImage)
-                                   .placeholder(R.drawable.frame4)
-                                   .into(binding.profileImage)
-
-                               binding.tvUsername.text = data.username
-                               binding.tvEmail.text = data.email
-                           }else{
-                               Toast.makeText(requireContext(),result.data.message,Toast.LENGTH_SHORT)
-                                   .show()
+           if (it.userId.isNotEmpty()){
+               viewModel.getUserData(it.userId).observe(viewLifecycleOwner){result ->
+                   if (result != null){
+                       when(result){
+                           is Result.Loading -> {
+                               setLoading(true)
                            }
-                            setLoading(false)
-                       }
-                       is Result.Error -> {
-                            setLoading(false)
-                            Toast.makeText(requireContext(),result.error,Toast.LENGTH_SHORT).show()
+                           is Result.Success -> {
+                               val data = result.data.data
+                               if (data != null){
+                                   Glide.with(requireContext())
+                                       .load(data.urlImage)
+                                       .placeholder(R.drawable.frame4)
+                                       .into(binding.profileImage)
+
+                                   binding.tvUsername.text = data.username
+                                   binding.tvEmail.text = data.email
+                               }else{
+                                   Toast.makeText(requireContext(),result.data.message,Toast.LENGTH_SHORT)
+                                       .show()
+                               }
+                               setLoading(false)
+                           }
+                           is Result.Error -> {
+                               setLoading(false)
+                               Toast.makeText(requireContext(),result.error,Toast.LENGTH_SHORT).show()
+                           }
                        }
                    }
                }
-           }
 
-           viewModel.getUserBookmark(it.userId).observe(viewLifecycleOwner){ result ->
-               if (result != null) {
-                   when (result) {
-                       is Result.Loading -> {
-                            setLoading(true)
-                       }
+               viewModel.getUserBookmark(it.userId).observe(viewLifecycleOwner){ result ->
+                   if (result != null) {
+                       when (result) {
+                           is Result.Loading -> {
+                               setLoading(true)
+                           }
 
-                       is Result.Success -> {
-                            val data = result.data.data
-                            val bookmarkCount = data?.size ?: 0
-                            binding.tvBookmarkCount.text = bookmarkCount.toString()
-                            setLoading(false)
-                       }
+                           is Result.Success -> {
+                               val data = result.data.data
+                               val bookmarkCount = data?.size ?: 0
+                               binding.tvBookmarkCount.text = bookmarkCount.toString()
+                               setLoading(false)
+                           }
 
-                       is Result.Error -> {
-                           setLoading(false)
-                           Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
-                       }
-                   }
-               }
-           }
-
-           viewModel.getUserHisotry(it.userId).observe(viewLifecycleOwner){ result ->
-               if (result != null) {
-                   when (result) {
-                       is Result.Loading -> {
-                           setLoading(true)
-                       }
-
-                       is Result.Success -> {
-                           val data = result.data.data
-                           val historyCount = data?.size ?: 0
-                           binding.tvHistoryCount.text = historyCount.toString()
-                           setLoading(false)
-                       }
-
-                       is Result.Error -> {
-                           setLoading(false)
-                           Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                           is Result.Error -> {
+                               setLoading(false)
+                               Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                           }
                        }
                    }
                }
+
+               viewModel.getUserHisotry(it.userId).observe(viewLifecycleOwner){ result ->
+                   if (result != null) {
+                       when (result) {
+                           is Result.Loading -> {
+                               setLoading(true)
+                           }
+
+                           is Result.Success -> {
+                               val data = result.data.data
+                               val historyCount = data?.size ?: 0
+                               binding.tvHistoryCount.text = historyCount.toString()
+                               setLoading(false)
+                           }
+
+                           is Result.Error -> {
+                               setLoading(false)
+                               Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                           }
+                       }
+                   }
+               }
+           }else{
+               Log.d("ProfileFragemnt","Session is Empty")
            }
        }
 
@@ -131,7 +135,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             }
             R.id.btn_logout -> {
                 viewModel.logout()
-                startActivity(Intent(requireActivity(),LoginActivity::class.java))
                 requireActivity().finish()
             }
         }

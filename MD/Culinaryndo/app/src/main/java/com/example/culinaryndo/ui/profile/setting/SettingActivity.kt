@@ -10,7 +10,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
 import com.example.culinaryndo.data.Result
 import com.example.culinaryndo.databinding.ActivitySettingBinding

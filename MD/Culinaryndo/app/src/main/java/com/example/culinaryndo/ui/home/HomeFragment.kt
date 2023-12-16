@@ -22,6 +22,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private val viewModel by viewModels<HomeViewModel>{
         ViewModelFactory.getInstance(requireContext())
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -79,7 +80,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private fun setWelcomeText() {
         viewModel.getSession().observe(viewLifecycleOwner){ session ->
-            if (session.isLogin){
+            if (session.userId.isNotEmpty()){
                 viewModel.getUserById(session.userId).observe(viewLifecycleOwner){ result->
                     if (result != null){
                         when(result){
@@ -91,7 +92,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
                                 binding.welcome.text  = getString(R.string.welcome,"${firstname}")
                             }
                             is Result.Error -> {
-                                Toast.makeText(requireContext(),result.error, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(),result.error, Toast
+                                    .LENGTH_SHORT)
+                                    .show()
                             }
                         }
                     }

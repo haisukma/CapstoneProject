@@ -1,19 +1,14 @@
 package com.example.culinaryndo.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.example.culinaryndo.data.Result
-import com.example.culinaryndo.data.model.AddBookmarkData
 import com.example.culinaryndo.data.model.AddBookmarkResponse
-import com.example.culinaryndo.data.model.BookmarkItem
+import com.example.culinaryndo.data.model.AddHisotryResponse
 import com.example.culinaryndo.data.model.BookmarkResponse
-import com.example.culinaryndo.data.model.DataItem
 import com.example.culinaryndo.data.model.DefaultResponse
-import com.example.culinaryndo.data.model.DetailData
 import com.example.culinaryndo.data.model.DetailResponse
 import com.example.culinaryndo.data.model.FoodResponse
-import com.example.culinaryndo.data.model.HistoryItem
 import com.example.culinaryndo.data.model.HistoryResponse
 import com.example.culinaryndo.data.model.LoginResult
 import com.example.culinaryndo.data.model.UserResponse
@@ -21,11 +16,8 @@ import com.example.culinaryndo.data.network.ApiServices
 import com.example.culinaryndo.data.pref.UserPreference
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
@@ -244,6 +236,31 @@ class CulinaryndoRepository(
         emit(Result.Loading)
         try {
             val response = apiService.getUserHistory(userId)
+            emit(Result.Success(response))
+        } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string()
+            val errorResponse = Gson().fromJson(errorBody, DefaultResponse::class.java)
+            emit(Result.Error(errorResponse.message.toString()))
+        }
+    }
+
+    fun deleteHistory(userId: String, historyId: String): LiveData<Result<DefaultResponse>> =
+        liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.deleteHistory(userId,historyId)
+            emit(Result.Success(response))
+        } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string()
+            val errorResponse = Gson().fromJson(errorBody, DefaultResponse::class.java)
+            emit(Result.Error(errorResponse.message.toString()))
+        }
+    }
+
+    fun addHisotry(userId: String, foodId: String): LiveData<Result<AddHisotryResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.addHitory(userId,foodId)
             emit(Result.Success(response))
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
