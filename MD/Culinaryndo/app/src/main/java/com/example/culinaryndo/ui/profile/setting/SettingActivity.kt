@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.culinaryndo.R
 import com.example.culinaryndo.ViewModelFactory
 import com.example.culinaryndo.data.Result
 import com.example.culinaryndo.databinding.ActivitySettingBinding
@@ -45,9 +46,11 @@ class SettingActivity : AppCompatActivity() {
                         is Result.Success -> {
                             val data = result.data.data
                             if (data != null){
-                                Glide.with(this)
-                                    .load(data.urlImage ?: "")
-                                    .into(binding.profileImage)
+                                if (data.urlImage != null){
+                                    Glide.with(this)
+                                        .load(data.urlImage)
+                                        .into(binding.profileImage)
+                                }
 
                                 binding.edFullname.setText(data.fullname ?: "")
                                 binding.edUsername.setText(data.username ?: "")
