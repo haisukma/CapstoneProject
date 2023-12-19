@@ -32,8 +32,8 @@ class HistoryAdapter: ListAdapter<HistoryItem, HistoryAdapter.MyViewHolder>(DIFF
             this.history = history
             binding.tvFoodName.text = history.foods?.title
 
-            val format = SimpleDateFormat("dd/mm/yyyy HH:mm", Locale.getDefault())
-            val date = format.format(convertTimeStamp(history.foods?.createdAt.toString()))
+            val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            val date = format.format(convertTimeStamp(history.createdAt.toString()))
             binding.tvCreatedAt.text = date
 
             itemView.setOnClickListener{

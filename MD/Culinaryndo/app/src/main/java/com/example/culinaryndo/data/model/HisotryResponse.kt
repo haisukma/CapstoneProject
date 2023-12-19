@@ -23,6 +23,12 @@ data class HistoryItem(
 	@field:SerializedName("foods")
 	val foods: HisotryFood? = null,
 
+	@field:SerializedName("updatedAt")
+	val updatedAt: String? = null,
+
+	@field:SerializedName("createdAt")
+	val createdAt: String? = null,
+
 	@field:SerializedName("historyId")
 	val historyId: Int? = null
 ) : Parcelable
